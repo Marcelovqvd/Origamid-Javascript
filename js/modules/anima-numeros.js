@@ -1,16 +1,31 @@
-export default function initAnimaNumeros() {}
+export default function initAnimaNumeros() {
+  function animaNumeros(params) {
+    const numeros = document.querySelectorAll("[data-numero")
 
-const numeros = document.querySelectorAll("[data-numero")
-numeros.forEach((numero) => {
-  const total = +numero.innerText
+    numeros.forEach((numero) => {
+      const total = +numero.innerText
+      const incremento = Math.floor(total / 100)
+      let start = 0
+      const timer = setInterval(() => {
+        start = start + incremento
+        numero.innerText = start
+        if (start > total) {
+          numero.innerText = total
+          clearInterval(timer)
+        }
+      }, 25 * Math.random())
+    })
+  }
 
-  let start = 0
-  const timer = setInterval(() => {
-    start++
-    numero.innerText = start
-    if (start > total) {
-      clearInterval(timer)
+  function handleMutation(mutation) {
+    if (mutation[0].target.classList.contains("ativo")) {
+      observer.disconnect()
+      animaNumeros()
     }
-  }, 0)
-  console.log(total)
-})
+  }
+
+  const observerTarget = document.querySelector(".numeros")
+  const observer = new MutationObserver(handleMutation)
+
+  observer.observe(observerTarget, { attributes: true })
+}
